@@ -44,6 +44,27 @@ router.get("/:bookId", (req, res, next) => {
 
 
 
+//ADD REVIEW
+router.post('/:bookId/new-review', (req, res) => {
+  const {bookId} = req.params
+  const {owner, comment} = req.body
+
+  Review.create({owner, comment, bookId})
+  .then(newReview => res.json(newReview))
+    .catch(err => res.json(err))
+  })
+
+
+  //LIST BOOK REVIEWS
+  router.get('/:bookId/reviews', (req, res) => {
+    
+    Review.find({"bookId": req.params.bookId})
+    .then(reviews => res.json(reviews))
+    .catch(err => res.json(err))
+  })
+
+
+
 //EDIT BOOK PAGE
 router.get("/:bookId/edit", (req, res, next) => {
   res.json("this is my editBook page. ")
