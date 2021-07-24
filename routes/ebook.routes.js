@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const Ebook = require("../models/Ebook.model");
 
 
+////// ebooks to be appended to the user's bookshelf when they are created
+
 //Ebook
 router.get("/", (req, res, next) => {
   res.json("Ebook main - All good in here");

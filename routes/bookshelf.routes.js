@@ -2,6 +2,7 @@ const router = require("express").Router();
 const mongoose = require('mongoose');
 const {PrivateBookshelf} = require("../models/Bookshelf.model")
 const {PublicBookshelf} = require("../models/Bookshelf.model")
+const {Shelf} = require("../models/Bookshelf.model")
 const User = require('../models/User.model')
 
 
@@ -63,7 +64,7 @@ router.post("/private/create", (req, res) => {
   PrivateBookshelf.create({
       name,
       shelfName,
-      shelfBooks, // is this going to be accessing the array of books? We have not populated
+      shelfBooks, // is this going to be accessing the array of books? We have not populated, do we have access?
       owner
   })
   .then(createdBookshelf => {
@@ -83,16 +84,15 @@ router.get("/public/create", (req, res) => {
 
 
 router.post("/public/create", (req, res) => {
-  const shelfName = req.body.shelves.name
-  const shelfBooks = req.body.shelves.books
-  const {name, owner} = req.body
-  // the above need to be edited depending on the model
-  //easier to have a seperate into seperate model?
+  const {name, currentlyReading, wantToRead, read, newShelf, owner} = req.body
+
 
   PublicBookshelf.create({
-      name, // these will all need to be edited
-      shelfName,
-      shelfBooks, 
+      name,
+      currentlyReading,
+      wantToRead,
+      read,
+      newShelf, // does this need to be populated somewhere?
       owner
   })
   .then(createdBookshelf => {
@@ -100,6 +100,114 @@ router.post("/public/create", (req, res) => {
     .then(user => res.json(user))
   })
 });
+
+
+
+
+//EDIT PRIVATE BOOKSHELF
+
+router.get("/private/:bookshelfId/edit", (req, res) => {
+  res.json("this is my editBook page. ")
+})
+
+
+router.put("/private/:bookshelfId/edit", (req, res) => {
+  const { bookshelfId } = req.params;
+  const shelfName = req.body.shelves.name
+  const shelfBooks = req.body.shelves.books
+  const {name, owner} = req.body
+
+  if (!mongoose.Types.ObjectId.isValid(bookshelfId)) {
+    res.status(400).json({ message: 'Specified bookshelf does not exist' });
+    return;
+  }
+ 
+  PrivateBookshelf.findByIdAndUpdate(bookshelfId, {
+    name,
+    shelfName,
+    shelfBooks,
+    owner
+}, {new: true})
+    .then((editedShelf) => res.json(editedShelf))
+    .catch(error => res.json(error));
+
+})
+
+
+
+//EDIT PUBLIC BOOKSHELF
+
+router.get("/public/:bookshelfId/edit", (req, res) => {
+  res.json("this is my editBook page. ")
+})
+
+
+router.put("/public/:bookshelfId/edit", (req, res) => {
+  const { bookshelfId } = req.params;
+  const {name, currentlyReading, wantToRead, read, newShelf, owner} = req.body
+
+
+  if (!mongoose.Types.ObjectId.isValid(bookshelfId)) {
+    res.status(400).json({ message: 'Specified bookshelf does not exist' });
+    return;
+  }
+ 
+  PublicBookshelf.findByIdAndUpdate(bookshelfId, {
+    name,
+    currentlyReading,
+    wantToRead,
+    read,
+    newShelf, // does this need to be populated somewhere?
+    owner
+}, {new: true})
+    .then((editedShelf) => res.json(editedShelf))
+    .catch(error => res.json(error));
+
+})
+
+
+//DELETE PRIVATE BOOKSHELF
+router.delete("/private/:bookshelfId/delete", (req, res, next) => {
+  const { bookshelfId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(bookshelfId)) {
+    res.status(400).json({ message: 'Specified bookshelf does not exist' });
+    return;
+  }
+ 
+  PrivateBookshelf.findByIdAndRemove(bookshelfId)
+    .then(() => res.json({ message: `Bookshelf removed successfully.` }))
+    .catch(error => res.json(error));
+
+})
+
+
+//DELETE PUBLIC BOOKSHELF
+router.delete("/public/:bookshelfId/delete", (req, res, next) => {
+  const { bookshelfId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(bookshelfId)) {
+    res.status(400).json({ message: 'Specified bookshelf does not exist' });
+    return;
+  }
+ 
+  PublicBookshelf.findByIdAndRemove(bookshelfId)
+    .then(() => res.json({ message: `Bookshelf removed successfully.` }))
+    .catch(error => res.json(error));
+
+})
+
+
+
+
+///////// HOW TO CREATE A NEW SHELF - can be done inside creating or updating bookshelf? (i.e. recipe books)
+
+//// Then how to delete an added single shelf without deleting the whole bookshelf
+
+
+
+
+
+
+
 
 
 
@@ -148,8 +256,8 @@ router.get("/:bookshelfId", (req, res, next) => {
 
 
 
-//EDIT BOOK PAGE
-router.get("/:bookId/edit", (req, res, next) => {
+/* //EDIT BOOK PAGE
+router.get("/:bookshId/edit", (req, res, next) => {
   res.json("this is my editBook page. ")
 })
 
@@ -167,35 +275,11 @@ router.put("/:bookId/edit", (req, res, next) => {
     .then((editedBook) => res.json(editedBook))
     .catch(error => res.json(error));
 
-})
+}) */
 
 
-//EDIT PRIVATE BOOKSHELF
-router.get("/:bookId/edit", (req, res, next) => {
-  res.json("this is my editBook page. ")
-})
 
-
-router.put("/:bookId/edit", (req, res, next) => {
-  const { bookId } = req.params;
-  const { title, author, coverUrl, epubUrl } = req.body
-
-  if (!mongoose.Types.ObjectId.isValid(bookId)) {
-    res.status(400).json({ message: 'Specified id is not valid' });
-    return;
-  }
- 
-  Book.findByIdAndUpdate(bookId, { title, author, coverUrl, epubUrl }, {new: true})
-    .then((editedBook) => res.json(editedBook))
-    .catch(error => res.json(error));
-
-})
-
-
-//CREATE A SHELF AND APPEND TO BOOKSHELF
-
-
-//DELETE BOOK
+/* //DELETE BOOK
 router.delete("/:bookId", (req, res, next) => {
   const { bookId } = req.params;
   if (!mongoose.Types.ObjectId.isValid(bookId)) {
@@ -207,7 +291,7 @@ router.delete("/:bookId", (req, res, next) => {
     .then(() => res.json({ message: `Book with ${bookId} is removed successfully.` }))
     .catch(error => res.json(error));
 
-})
+}) */
 
 
 

@@ -1,10 +1,28 @@
 const { Schema, model } = require('mongoose');
 
 
+const shelfSchema = new Schema(
+	{
+		name: String,
+		createdShelf: [String]
+	}
+)
+const Shelf = model('Shelf', shelfSchema)
+
+
+
+
 const publicBookshelfSchema = new Schema(
 	{
 		name: String,
-		shelves: [
+		currentlyReading: [String],
+		wantToRead: [String],
+		read: [String,],
+		newShelf: { type: Schema.Types.ObjectId, ref: "Shelf" },
+		owner: { type: Schema.Types.ObjectId, ref: "User" }
+
+
+/* 		shelves: [
 			{"Currently reading": [String]},
 			{"Want to read": [String]},
 			{"Read": [String]},
@@ -12,8 +30,7 @@ const publicBookshelfSchema = new Schema(
 				name: String,
 				books: [String]
 			}
-		],
-		owner: { type: Schema.Types.ObjectId, ref: "User" }
+		], */
 	},
 	{
 		timestamps: true
@@ -21,6 +38,8 @@ const publicBookshelfSchema = new Schema(
 );
 
 const PublicBookshelf = model('PublicBookshelf', publicBookshelfSchema);
+
+
 
 
 
@@ -40,4 +59,4 @@ const privateBookshelfSchema = new Schema(
 
 const PrivateBookshelf = model('PrivateBookshelf', privateBookshelfSchema);
 
-module.exports = {PublicBookshelf: PublicBookshelf, PrivateBookshelf: PrivateBookshelf};
+module.exports = {PublicBookshelf: PublicBookshelf, PrivateBookshelf: PrivateBookshelf, Shelf: Shelf};
