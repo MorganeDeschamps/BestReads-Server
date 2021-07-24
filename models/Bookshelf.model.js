@@ -5,16 +5,11 @@ const publicBookshelfSchema = new Schema(
 	{
 		name: String,
 		shelves: [
+			{"Currently reading": [String]},
+			{"Want to read": [String]},
+			{"Read": [String]},
 			{
-				name: "Currently reading",
-				books: [String]
-			},
-			{
-				name: "Want to read",
-				books: [String]
-			},
-			{
-				name: "Read",
+				name: String,
 				books: [String]
 			}
 		],

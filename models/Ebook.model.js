@@ -20,6 +20,6 @@ const ebookSchema = new Schema(
 	}
 );
 
-const Ebook = model('Ebook', bookSchema);
+const Ebook = model('Ebook', ebookSchema);
 
 module.exports = Ebook;
