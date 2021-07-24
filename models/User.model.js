@@ -13,7 +13,19 @@ const userSchema = new Schema(
 			required: true
 		},
 		password: String,
-		imageUrl: String
+		imageUrl: {
+			type: String,
+			default: "../public/matilda.jpeg"
+		},
+		publicBookshelf: {
+			name: String,
+			bookshelf: {type: Schema.Types.ObjectId, ref: "PublicBookshelf"}
+		},
+		privateBookshelf: {
+			name: String,
+			bookshelf: {type: Schema.Types.ObjectId, ref: "PrivateBookshelf"}
+		},
+		reviews: [{type: Schema.Types.ObjectId, ref: "Review"}]
 	},
 	{
 		timestamps: true
