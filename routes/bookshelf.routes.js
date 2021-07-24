@@ -1,6 +1,5 @@
 const router = require("express").Router();
 const mongoose = require('mongoose');
-const Book = require("../models/Book.model");
 const {PrivateBookshelf} = require("../models/Bookshelf.model")
 const {PublicBookshelf} = require("../models/Bookshelf.model")
 
