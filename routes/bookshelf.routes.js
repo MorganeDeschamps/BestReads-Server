@@ -104,7 +104,7 @@ router.post("/public/create", (req, res) => {
 
 
 
-//EDIT PRIVATE BOOKSHELF
+//EDIT PRIVATE BOOKSHELF - EDIT NAME
 
 router.get("/private/:bookshelfId/edit", (req, res) => {
   res.json("this is my editBook page. ")
@@ -128,7 +128,7 @@ router.put("/private/:bookshelfId/edit", (req, res) => {
     shelfBooks,
     owner
 }, {new: true})
-    .then((editedShelf) => res.json(editedShelf))
+    .then((editedBookshelf) => res.json(editedBookshelf))
     .catch(error => res.json(error));
 
 })
@@ -160,7 +160,7 @@ router.put("/public/:bookshelfId/edit", (req, res) => {
     newShelf, // does this need to be populated somewhere?
     owner
 }, {new: true})
-    .then((editedShelf) => res.json(editedShelf))
+    .then((editedBookshelf) => res.json(editedBookshelf))
     .catch(error => res.json(error));
 
 })
@@ -197,10 +197,50 @@ router.delete("/public/:bookshelfId/delete", (req, res, next) => {
 
 
 
+// CREAT SHELF AND APPEND TO PRIVATE BOOKSHELF
 
-///////// HOW TO CREATE A NEW SHELF - can be done inside creating or updating bookshelf? (i.e. recipe books)
+router.get("/private/shelf/create", (req, res) => {
+  res.json("this is my createShelf page. ")
+});
 
-//// Then how to delete an added single shelf without deleting the whole bookshelf
+
+router.post("/private/shelf/create", (req, res) => {
+  const {name, createdShelf, privateBookshelf} = req.body
+
+  Shelf.create({
+    name,
+    createdShelf,
+    privateBookshelf
+  })
+  .then(createdShelf => {
+    PrivateBookshelf.findByIdAndUpdate(privateBookshelf, {$addToSet: {createdShelf: createdShelf._id}}, {new:true})
+    .then(user => res.json(user))
+  })
+});
+
+
+
+
+// CREAT SHELF AND APPEND TO PUBLIC BOOKSHELF
+
+router.get("/public/shelf/create", (req, res) => {
+  res.json("this is my createShelf page. ")
+});
+
+
+router.post("/public/shelf/create", (req, res) => {
+  const {name, createdShelf, publicBookshelf} = req.body
+
+  Shelf.create({
+    name,
+    createdShelf,
+    publicBookshelf
+  })
+  .then(createdShelf => {
+    publicBookshelf.findByIdAndUpdate(publicBookshelf, {$addToSet: {createdShelf: createdShelf._id}}, {new:true})
+    .then(user => res.json(user))
+  })
+});
 
 
 

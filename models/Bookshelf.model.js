@@ -4,7 +4,9 @@ const { Schema, model } = require('mongoose');
 const shelfSchema = new Schema(
 	{
 		name: String,
-		createdShelf: [String]
+		books: [String],
+		privateBookshelf: { type: Schema.Types.ObjectId, ref: "privateBookshelf" },
+		publicBookshelf: { type: Schema.Types.ObjectId, ref: "publicBookshelf" }
 	}
 )
 const Shelf = model('Shelf', shelfSchema)

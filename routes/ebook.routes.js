@@ -1,41 +1,46 @@
 const router = require("express").Router();
 const mongoose = require('mongoose');
+const { PrivateBookshelf } = require("../models/Bookshelf.model");
 const Ebook = require("../models/Ebook.model");
 
 
 ////// ebooks to be appended to the user's bookshelf when they are created
 
 //Ebook
-router.get("/", (req, res, next) => {
+router.get("/", (req, res) => {
   res.json("Ebook main - All good in here");
 });
 
 
-//CREATE Ebook
-router.get("/create", (req, res, next) => {
+//CREATE EBOOK AND APPEND TO PRIVATE SHELF
+
+router.get("/create", (req, res) => {
   res.json("this is my createEbook page. ")
 })
 
 
-router.post("/create", (req, res, next) => {
-  const { title, author, coverUrl, epubUrl} = req.body
+router.post("/create", (req, res) => {
+  const { title, author, coverUrl, epubUrl, owner} = req.body
 
   Ebook.create({
       title,
       author,
       coverUrl, 
-      epubUrl
+      epubUrl,
+      owner,    
   })
-  .then(createdEbook => res.json(createdEbook))
-  .catch(err=>res.json(err))
-});
+  .then(createdEbook => {
+    PrivateBookshelf.findByIdAndUpdate()
+
+  };
 
 
 
 
 
-//DISPLAY ONE Ebook
-router.get("/:ebookId", (req, res, next) => {
+//DISPLAY ONE EBOOK
+
+router.get("/:ebookId", (req, res) => {
   const id = req.params.ebookId
 
 

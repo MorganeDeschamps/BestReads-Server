@@ -17,11 +17,10 @@ const userSchema = new Schema(
 			type: String,
 			default: "../public/matilda.jpeg"
 		},
-		publicBookshelf: {bookshelf: {type: Schema.Types.ObjectId, ref: "PublicBookshelf"}
-		},
+		publicBookshelf: {type: Schema.Types.ObjectId, ref: "PublicBookshelf"},
+
+		privateBookshelf: {type: Schema.Types.ObjectId, ref: "PrivateBookshelf"},
 		
-		privateBookshelf: {bookshelf: {type: Schema.Types.ObjectId, ref: "PrivateBookshelf"}
-		},
 		reviews: [{type: Schema.Types.ObjectId, ref: "Review"}]
 	},
 	{
