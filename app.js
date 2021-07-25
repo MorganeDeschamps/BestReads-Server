@@ -13,7 +13,7 @@ require('./config/index.config')(app);
 const authRoutes = require('./routes/auth.routes');
 app.use('/api/auth', authRoutes);
 
-const ebookRoutes = require('./routes/book.routes');
+const ebookRoutes = require('./routes/ebook.routes');
 app.use('/api/ebook', ebookRoutes);
 
 const bookshelfRoutes = require('./routes/bookshelf.routes');

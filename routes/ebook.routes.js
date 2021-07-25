@@ -32,7 +32,9 @@ router.post("/create", (req, res) => {
   .then(createdEbook => {
     PrivateBookshelf.findByIdAndUpdate()
 
-  };
+  }).catch(err => console.log(err))
+  
+});
 
 
 
