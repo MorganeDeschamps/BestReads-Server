@@ -12,7 +12,7 @@ const ebookSchema = new Schema(
 			required: true
 		},
 		coverUrl: String,
-        epubUrl: String,
+        ebookUrl: String,
 		owner: { type: Schema.Types.ObjectId, ref: "User" }
 	},
 	{

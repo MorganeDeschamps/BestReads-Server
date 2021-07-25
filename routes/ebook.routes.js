@@ -1,52 +1,56 @@
 const router = require("express").Router();
 const mongoose = require('mongoose');
-const { PrivateBookshelf } = require("../models/Bookshelf.model");
+const { PrivateBookshelf } = require("../models/PrivateBookshelf.model");
+const { PublicBookshelf} = require('../models/PublicBookshelf.model')
 const Ebook = require("../models/Ebook.model");
 
 
-////// ebooks to be appended to the user's bookshelf when they are created
-
-//Ebook
-router.get("/", (req, res) => {
-  res.json("Ebook main - All good in here");
-});
 
 
-//CREATE EBOOK AND APPEND TO PRIVATE SHELF
+ // SHOW ALL EBOOKS
 
-router.get("/create", (req, res) => {
+router.get('/', (req, res)=>{
+  Ebook.find()
+  .populate('owner')
+  .then(allEbooks => res.json(allEbooks))
+  .catch(err => res.json)  
+})
+
+
+//CREATE EBOOK AND APPEND TO STATIC SHELF
+
+router.get("/fixed/create/", (req, res) => {
   res.json("this is my createEbook page. ")
 })
 
 
-router.post("/create", (req, res) => {
-  const { title, author, coverUrl, epubUrl, owner} = req.body
+router.post("/fixed/create", (req, res) => {
+  const { title, author, coverUrl, ebookUrl, owner} = req.body
 
   Ebook.create({
       title,
       author,
       coverUrl, 
-      epubUrl,
+      ebookUrl,
       owner,    
   })
-  .then(createdEbook => {
-    PrivateBookshelf.findByIdAndUpdate()
+  PrivateBookshelf.findOne(staticShelf, {$addToSet: {createdEbook: createdEbook._id}}, {new:true})
+  .then(createdEbook => res.json(createdEbook)
 
-  }).catch(err => console.log(err))
-  
+    .catch(err => res.json(err))
+  )
 });
 
 
 
-
-
-//DISPLAY ONE EBOOK
+//GET ONE EBOOK BY ID
 
 router.get("/:ebookId", (req, res) => {
-  const id = req.params.ebookId
+  const {ebookId} = req.params
 
 
-  Ebook.findById(id)
+  Ebook.findById(ebookId)
+  .populate('owner')
   .then(EbookResult => res.json(EbookResult))
   .catch(err => res.json(err))
 
@@ -54,57 +58,47 @@ router.get("/:ebookId", (req, res) => {
 
 
 
-//EDIT Ebook PAGE
-router.get("/:ebookId/edit", (req, res, next) => {
+//EDIT EBOOK
+router.get("/:ebookId/edit", (req, res) => {
   res.json("this is my editEbook page. ")
 })
 
 
-router.put("/:ebookId/edit", (req, res, next) => {
-  const { ebookId
- } = req.params;
-  const { title, author, coverUrl, epubUrl } = req.body
+router.put("/:ebookId/edit", (req, res) => {
+  const { ebookId} = req.params;
+  const { title, author, coverUrl, ebookUrl, owner } = req.body
 
-  if (!mongoose.Types.ObjectId.isValid(ebookId
-  )) {
-    res.status(400).json({ message: 'Specified id is not valid' });
+  if (!mongoose.Types.ObjectId.isValid(ebookId)) {
+    res.status(400).json({ message: 'Specified Ebook does not exist' });
     return;
   }
  
-  Ebook.findByIdAndUpdate(ebookId
-  , { title, author, coverUrl, epubUrl }, {new: true})
-    .then((editedEbook) => res.json(editedEbook))
-    .catch(error => res.json(error));
+  Ebook.findByIdAndUpdate(ebookId, { title, author, coverUrl, ebookUrl, owner }, {new: true})
+    .then(editedEbook => res.json(editedEbook))
+    .catch(err => res.json(err));
 
 })
-
-
 
 
 
 //DELETE Ebook
-router.delete("/:ebookId", (req, res, next) => {
-  const { ebookId
- } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(ebookId
-  )) {
-    res.status(400).json({ message: 'Specified id is not valid' });
+router.delete("/:ebookId/delete", (req, res) => {
+  const {ebookId} = req.params
+  if (!mongoose.Types.ObjectId.isValid(ebookId)) {
+    res.status(400).json({ message: 'Specified Ebook does not exist' });
     return;
   }
  
-  Ebook.findByIdAndRemove(ebookId
-  )
-    .then(() => res.json({ message: `Ebook with ${ebookId
-  } is removed successfully.` }))
-    .catch(error => res.json(error));
+  Ebook.findByIdAndRemove(ebookId)
+    .then(() => res.json({ message: `Ebook was successfully removed.` }))
+    .catch(err => res.json(err));
 
 })
 
 
 
-
 //TESTING
-router.get("/test/:ebookId", (req, res, next) => {
+router.get("/test/:ebookId", (req, res) => {
   res.json(req.params.ebookId
   );
 });
