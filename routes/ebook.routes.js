@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const mongoose = require('mongoose');
-const { PrivateBookshelf } = require("../models/PublicBookshelf.model");
+const { PrivateBookshelf } = require("../models/PrivateBookshelf.model");
+const { PublicBookshelf} = require('../models/PublicBookshelf.model')
 const Ebook = require("../models/Ebook.model");
 
 
@@ -16,29 +17,29 @@ router.get('/', (req, res)=>{
 })
 
 
-//CREATE EBOOK AND APPEND TO PRIVATE SHELF
+//CREATE EBOOK AND APPEND TO STATIC SHELF
 
-router.get("/create", (req, res) => {
+router.get("/fixed/create/", (req, res) => {
   res.json("this is my createEbook page. ")
 })
 
 
-router.post("/create", (req, res) => {
-  const { title, author, coverUrl, epubUrl, owner} = req.body
+router.post("/fixed/create", (req, res) => {
+  const { title, author, coverUrl, ebookUrl, owner} = req.body
 
   Ebook.create({
       title,
       author,
       coverUrl, 
-      epubUrl,
+      ebookUrl,
       owner,    
   })
-  .then(createdEbook => {
-    res.json(createdEbook)
-/*     PrivateBookshelf.find(shelves.books, {$addToSet: {createdEbook: createdEbook._id}}, {new:true}) */
+  PrivateBookshelf.findOne(staticShelf, {$addToSet: {createdEbook: createdEbook._id}}, {new:true})
+  .then(createdEbook => res.json(createdEbook)
+
     .catch(err => res.json(err))
-  })
-})
+  )
+});
 
 
 
@@ -65,14 +66,14 @@ router.get("/:ebookId/edit", (req, res) => {
 
 router.put("/:ebookId/edit", (req, res) => {
   const { ebookId} = req.params;
-  const { title, author, coverUrl, epubUrl, owner } = req.body
+  const { title, author, coverUrl, ebookUrl, owner } = req.body
 
   if (!mongoose.Types.ObjectId.isValid(ebookId)) {
     res.status(400).json({ message: 'Specified Ebook does not exist' });
     return;
   }
  
-  Ebook.findByIdAndUpdate(ebookId, { title, author, coverUrl, epubUrl, owner }, {new: true})
+  Ebook.findByIdAndUpdate(ebookId, { title, author, coverUrl, ebookUrl, owner }, {new: true})
     .then(editedEbook => res.json(editedEbook))
     .catch(err => res.json(err));
 
