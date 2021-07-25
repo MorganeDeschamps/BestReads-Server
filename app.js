@@ -19,17 +19,23 @@ app.use('/api/review', reviewRoutes);
 const ebookRoutes = require('./routes/ebook.routes');
 app.use('/api/ebook', ebookRoutes);
 
-const privateBookshelfRoutes = require('./routes/privateBookshelf.routes');
-app.use('/api/private-bookshelf', privateBookshelfRoutes);
 
+
+//PUBLIC BOOKSHELF/SHELVES
 const publicBookshelfRoutes = require('./routes/publicBookshelf.routes');
 app.use('/api/public-bookshelf', publicBookshelfRoutes);
 
-const shelfRoutes = require('./routes/shelves.routes');
-app.use('/api/shelves', shelfRoutes)
+const publicShelvesRoutes = require('./routes/publicShelves.routes');
+app.use('/api/public-shelves', publicShelvesRoutes)
 
-const uploadRoutes = require('./routes/upload.routes');
-app.use('/api/upload', uploadRoutes);
+
+//PRIVATE BOOKSHELF/SHELVES 
+const privateBookshelfRoutes = require('./routes/privateBookshelf.routes');
+app.use('/api/private-bookshelf', privateBookshelfRoutes);
+
+const privateShelvesRoutes = require('./routes/privateShelves.routes');
+app.use('/api/private-shelves', privateShelvesRoutes)
+
 
 
 const indexRoutes = require('./routes/index.routes');
