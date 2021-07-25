@@ -13,11 +13,20 @@ require('./config/index.config')(app);
 const authRoutes = require('./routes/auth.routes');
 app.use('/api/auth', authRoutes);
 
-const ebookRoutes = require('./routes/book.routes');
+const reviewRoutes = require('./routes/reviews.routes');
+app.use('/api/review', reviewRoutes);
+
+const ebookRoutes = require('./routes/ebook.routes');
 app.use('/api/ebook', ebookRoutes);
 
-const bookshelfRoutes = require('./routes/bookshelf.routes');
-app.use('/api/bookshelf', bookshelfRoutes);
+const privateBookshelfRoutes = require('./routes/privateBookshelf.routes');
+app.use('/api/private-bookshelf', privateBookshelfRoutes);
+
+const publicBookshelfRoutes = require('./routes/publicBookshelf.routes');
+app.use('/api/public-bookshelf', publicBookshelfRoutes);
+
+const shelfRoutes = require('./routes/shelves.routes');
+app.use('/api/shelves', shelfRoutes)
 
 const uploadRoutes = require('./routes/upload.routes');
 app.use('/api/upload', uploadRoutes);
